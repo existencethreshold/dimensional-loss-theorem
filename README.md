@@ -55,7 +55,7 @@ dimensional-loss-theorem/
 └── code/                        # Validation scripts
     ├── validate_from_csv.py                # Quick validation + figure generation (RECOMMENDED)
     ├── verification_script.py              # Full neural network validation (advanced)
-    └── validation_results/                 # Generated output (Remove before running replication)
+    └── validation_results/                 # Generated output (not in git)
         ├── validation_results.png          # Main validation figure
         └── detailed_validation_results.csv # Full validation results
 ```
