@@ -740,8 +740,8 @@ def main():
         for path in possible_paths:
             if os.path.exists(os.path.join(path, 'test_sentences.py')):
                 sys.path.insert(0, path)
-                from test_sentences import coherent, incoherent
-                SENTENCES = coherent + incoherent
+                from test_sentences import coherent, hallucinations
+                SENTENCES = coherent + hallucinations
                 print(f"✓ Loaded {len(SENTENCES)} test sentences from {path}")
                 loaded = True
                 break
