@@ -716,29 +716,60 @@ def main():
     # Option 2: Extract from models (downloads ~500MB of models on first run)
     # Set USE_SAVED_DATA = False to use this option
     MODEL_NAME = "gpt2"
-    SENTENCES = [
-        # Add your 60 sentences here, or load from file
-        "The Eiffel Tower is located in Paris.",
-        "The Eiffel Tower is located on the moon.",
-        # ... (remaining 58 sentences)
-    ]
     
     OUTPUT_DIR = "validation_results"
     
     # Create output directory
     import os
+    import sys
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
+    # Try to load sentences from data/test_sentences.py
+    try:
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'data'))
+        from test_sentences import coherent, incoherent
+        SENTENCES = coherent + incoherent
+        print(f"✓ Loaded {len(SENTENCES)} test sentences from data/test_sentences.py")
+    except Exception:
+        # Fallback to example sentences
+        SENTENCES = [
+            "The Eiffel Tower is located in Paris.",
+            "The Eiffel Tower is located on the moon.",
+            # Note: For full validation, add all 60 sentences or load from test_sentences.py
+        ]
+        print(f"⚠️  Could not load test_sentences.py, using {len(SENTENCES)} example sentences")
+    
     # ===== RUN VALIDATION =====
-    import os
     if USE_SAVED_DATA:
-        print(f"\nLoading data from: {SAVED_DATA_PATH}")
-        try:
+        print(f"\nLooking for saved data: {SAVED_DATA_PATH}")
+        if not os.path.exists(SAVED_DATA_PATH):
+            # Check if we can fall back to model extraction
+            if MODELS_AVAILABLE:
+                print(f"⚠️  Saved data not found: {SAVED_DATA_PATH}")
+                print(f"\n✓ Transformers library detected!")
+                print(f"\nSwitching to model extraction mode...")
+                print(f"This will download ~500MB of models on first run.")
+                print(f"\nPress Ctrl+C now to cancel, or wait 5 seconds to continue...")
+                import time
+                try:
+                    time.sleep(5)
+                except KeyboardInterrupt:
+                    print("\n\nCancelled by user.")
+                    return
+                
+                print(f"\nExtracting attention from {len(SENTENCES)} sentences using {MODEL_NAME}...")
+                df = validate_dataset(SENTENCES, model_name=MODEL_NAME)
+            else:
+                print(f"\n⚠️  ERROR: Saved data not found and transformers not available.")
+                print(f"\nTo use this script, you need EITHER:")
+                print(f"  1. Pre-saved attention_maps.npy file (not included in repo)")
+                print(f"  2. Transformers library: pip install transformers torch")
+                print(f"\nRECOMMENDED: Use validate_from_csv.py instead!")
+                print(f"  It uses pre-computed data and works immediately.")
+                return
+        else:
+            print(f"Loading saved data from {SAVED_DATA_PATH}...")
             df = validate_from_saved_data(SAVED_DATA_PATH)
-        except FileNotFoundError as e:
-            print(f"\n⚠️  ERROR: {e}")
-            print("\nExiting. Please follow the instructions above.")
-            return
     else:
         print(f"\nExtracting attention from {len(SENTENCES)} sentences using {MODEL_NAME}")
         df = validate_dataset(SENTENCES, model_name=MODEL_NAME)
