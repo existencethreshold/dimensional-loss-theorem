@@ -68,10 +68,23 @@ dimensional-loss-theorem/
 
 ### Installation
 
+**Method 1: Clone with Git (recommended)**
 ```bash
-# Clone repository
 git clone https://github.com/existencethreshold/dimensional-loss-theorem.git
 cd dimensional-loss-theorem
+
+# Install core dependencies
+# Windows:
+pip install -r requirements.txt
+
+# Linux/Mac:
+pip3 install -r requirements.txt
+```
+
+**Method 2: Download ZIP**
+```bash
+# After downloading and extracting the ZIP file:
+cd dimensional-loss-theorem-main
 
 # Install core dependencies
 # Windows:
