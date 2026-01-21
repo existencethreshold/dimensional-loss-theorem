@@ -479,12 +479,12 @@ def analyze_results(df: pd.DataFrame) -> None:
     print(f"Theoretical loss:  {df['loss_pct_theory'].mean():.2f}% ± {df['loss_pct_theory'].std():.2f}%")
     print(f"Discrepancy:       {df['loss_error'].mean():.2f}% ± {df['loss_error'].std():.2f}%")
     
-    # Expected value from Gemini's calculation
-    expected_loss = 86.2  # For p=0.5, N=20
+    # Expected value from theoretical calculation
+    expected_loss = 86.2  # For p=0.5, N=20 (theoretical baseline)
     actual_mean_loss = df['loss_pct_empirical'].mean()
-    print(f"\nExpected (Gemini): {expected_loss:.1f}%")
-    print(f"Observed (Nate):   {actual_mean_loss:.1f}%")
-    print(f"Delta:             {abs(actual_mean_loss - expected_loss):.1f}%")
+    print(f"\nTheoretical (p=0.5, N=20): {expected_loss:.1f}%")
+    print(f"Observed (this dataset):    {actual_mean_loss:.1f}%")
+    print(f"Delta:                      {abs(actual_mean_loss - expected_loss):.1f}%")
     
     if abs(actual_mean_loss - expected_loss) < 2:
         print("✓ WITHIN TOLERANCE (< 2%)")
@@ -627,7 +627,7 @@ def create_visualizations(df: pd.DataFrame, output_dir: str = ".") -> None:
     axes[0].axvline(df['loss_pct_empirical'].mean(), color='red', linestyle='--', 
                     linewidth=2, label=f'Mean: {df["loss_pct_empirical"].mean():.1f}%')
     axes[0].axvline(86.2, color='green', linestyle='--', 
-                    linewidth=2, label='Theory: 86.2%')
+                    linewidth=2, label='Theoretical: 86.2%')
     axes[0].set_xlabel('Information Loss (%)')
     axes[0].set_ylabel('Frequency')
     axes[0].set_title('Distribution of Φ Loss')
@@ -726,18 +726,38 @@ def main():
     
     # Try to load sentences from data/test_sentences.py
     try:
-        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'data'))
-        from test_sentences import coherent, incoherent
-        SENTENCES = coherent + incoherent
-        print(f"✓ Loaded {len(SENTENCES)} test sentences from data/test_sentences.py")
-    except Exception:
+        # Multiple path attempts for robustness
+        import sys
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        possible_paths = [
+            os.path.join(script_dir, '..', 'data'),
+            os.path.join(script_dir, '..', '..', 'data'),  # For nested structures
+            os.path.join(os.getcwd(), 'data'),
+            os.path.join(os.getcwd(), '..', 'data'),
+        ]
+        
+        loaded = False
+        for path in possible_paths:
+            if os.path.exists(os.path.join(path, 'test_sentences.py')):
+                sys.path.insert(0, path)
+                from test_sentences import coherent, incoherent
+                SENTENCES = coherent + incoherent
+                print(f"✓ Loaded {len(SENTENCES)} test sentences from {path}")
+                loaded = True
+                break
+        
+        if not loaded:
+            raise ImportError("Could not find test_sentences.py")
+            
+    except Exception as e:
         # Fallback to example sentences
+        print(f"⚠️  Could not load test_sentences.py: {e}")
         SENTENCES = [
             "The Eiffel Tower is located in Paris.",
             "The Eiffel Tower is located on the moon.",
-            # Note: For full validation, add all 60 sentences or load from test_sentences.py
+            # Note: For full validation, you need the complete test_sentences.py file
         ]
-        print(f"⚠️  Could not load test_sentences.py, using {len(SENTENCES)} example sentences")
+        print(f"⚠️  Using only {len(SENTENCES)} example sentences - results NOT representative!")
     
     # ===== RUN VALIDATION =====
     if USE_SAVED_DATA:
@@ -803,7 +823,7 @@ def main():
         print("✗   S-COMPONENT NEEDS REVISION")
     
     print(f"\nObserved Loss: {loss_mean:.2f}% ± {loss_std:.2f}%")
-    print(f"Expected Loss: 86.2% (Gemini's prediction)")
+    print(f"Theoretical Baseline: 84-86%")
     print(f"Discrepancy:   {abs(loss_mean - 86.2):.2f}%")
     
     if abs(loss_mean - 86.2) < 2:
