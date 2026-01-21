@@ -20,7 +20,29 @@ def load_and_validate():
     print("=" * 70)
     
     # Load data
-    df = pd.read_csv('dimensional_stress_data.csv')
+    import os
+    # Try to find the CSV in multiple locations
+    possible_paths = [
+        '../data/dimensional_stress_data.csv',  # Standard location
+        'dimensional_stress_data.csv',  # Current directory
+        'data/dimensional_stress_data.csv',  # If run from repo root
+    ]
+    
+    csv_path = None
+    for path in possible_paths:
+        if os.path.exists(path):
+            csv_path = path
+            break
+    
+    if csv_path is None:
+        raise FileNotFoundError(
+            "Could not find dimensional_stress_data.csv\n"
+            "Expected location: ../data/dimensional_stress_data.csv\n"
+            "Make sure you're running this from the code/ directory"
+        )
+    
+    print(f"Loading data from: {csv_path}")
+    df = pd.read_csv(csv_path)
     
     print(f"\nLoaded {len(df)} sentences")
     print(f"  Truth: {len(df[df['category']=='truth'])}")
@@ -196,7 +218,7 @@ def analyze_results(df):
     return df
 
 
-def create_visualizations(df):
+def create_visualizations(df, output_dir='.'):
     """Create validation plots."""
     
     plt.style.use('seaborn-v0_8-darkgrid')
@@ -258,8 +280,10 @@ def create_visualizations(df):
                    bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
     
     plt.tight_layout()
-    plt.savefig('validation_results.png', dpi=300, bbox_inches='tight')
-    print("\n✓ Saved: validation_results.png")
+    import os
+    output_path = os.path.join(output_dir, 'validation_results.png')
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    print(f"\n✓ Saved: {output_path}")
     
     plt.show()
 
@@ -270,22 +294,29 @@ def main():
     print(" No extraction needed - data already computed!")
     print("=" * 70)
     
+    # Create output directory
+    import os
+    output_dir = 'validation_results'
+    os.makedirs(output_dir, exist_ok=True)
+    
     # Load and validate
     df = load_and_validate()
     
     # Save detailed results
-    df.to_csv('detailed_validation_results.csv', index=False)
-    print(f"\n✓ Saved: detailed_validation_results.csv")
+    output_csv = os.path.join(output_dir, 'detailed_validation_results.csv')
+    df.to_csv(output_csv, index=False)
+    print(f"\n✓ Saved: {output_csv}")
     
     # Analyze
     analyze_results(df)
     
     # Visualize
     print("\nCreating visualizations...")
-    create_visualizations(df)
+    create_visualizations(df, output_dir=output_dir)
     
     print("\n" + "=" * 70)
     print(" VALIDATION COMPLETE")
+    print(f" Results saved to: {output_dir}/")
     print("=" * 70)
 
 
