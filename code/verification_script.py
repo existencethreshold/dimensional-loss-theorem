@@ -697,14 +697,24 @@ def main():
     print(" Nathan M. Thornhill - January 21, 2026")
     print("=" * 70)
     
+    # ===== IMPORTANT: READ THIS FIRST =====
+    # This script requires either:
+    # 1. Pre-saved attention_maps.npy file (advanced users)
+    # 2. OR transformers library installed (downloads ~500MB)
+    #
+    # RECOMMENDED FOR MOST USERS: Use validate_from_csv.py instead!
+    # That script uses pre-computed data and works immediately.
+    #
+    # Only use THIS script if you want to test on actual neural networks.
+    
     # ===== CONFIGURATION =====
-    # Choose your validation method:
     
-    # Option 1: Load from saved data (if you have pre-extracted attention maps)
-    USE_SAVED_DATA = True  # Change to False to extract from models
-    SAVED_DATA_PATH = "attention_maps.npy"  # Path to your saved data
+    # Option 1: Load from saved data (requires attention_maps.npy file)
+    USE_SAVED_DATA = True
+    SAVED_DATA_PATH = "attention_maps.npy"
     
-    # Option 2: Extract from models (requires transformers)
+    # Option 2: Extract from models (downloads ~500MB of models on first run)
+    # Set USE_SAVED_DATA = False to use this option
     MODEL_NAME = "gpt2"
     SENTENCES = [
         # Add your 60 sentences here, or load from file
