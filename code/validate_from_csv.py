@@ -129,10 +129,10 @@ def analyze_results(df):
     print(f"Theoretical loss:  {df['loss_theory'].mean():.2f}% ± {df['loss_theory'].std():.2f}%")
     print(f"Discrepancy:       {df['loss_error'].mean():.2f}% ± {df['loss_error'].std():.2f}%")
     
-    # Gemini's prediction
-    print(f"\nGemini predicted:  86.2% (for p=0.5, N=20)")
-    print(f"Your data shows:   {df['loss_emp'].mean():.1f}%")
-    print(f"Delta:             {abs(df['loss_emp'].mean() - 86.2):.1f}%")
+    # Theoretical baseline
+    print(f"\nTheoretical (p=0.5, N=20): 86.2%")
+    print(f"Your data shows:            {df['loss_emp'].mean():.1f}%")
+    print(f"Delta:                      {abs(df['loss_emp'].mean() - 86.2):.1f}%")
     
     if abs(df['loss_emp'].mean() - 86.2) < 2:
         print("✓ WITHIN TOLERANCE")
@@ -250,7 +250,7 @@ def create_visualizations(df, output_dir='.'):
     axes[1, 0].axvline(df['loss_emp'].mean(), color='red', linestyle='--', 
                       linewidth=2, label=f"Mean: {df['loss_emp'].mean():.1f}%")
     axes[1, 0].axvline(86.2, color='green', linestyle='--', 
-                      linewidth=2, label='Gemini: 86.2%')
+                      linewidth=2, label='Theoretical: 86.2%')
     axes[1, 0].set_xlabel('Information Loss (%)', fontsize=12)
     axes[1, 0].set_ylabel('Frequency', fontsize=12)
     axes[1, 0].set_title('Loss Distribution', fontsize=14, fontweight='bold')

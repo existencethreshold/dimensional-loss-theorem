@@ -801,10 +801,6 @@ def main():
     # ===== ANALYSIS =====
     analyze_results(df)
     
-    # ===== VISUALIZATIONS =====
-    print(f"\nCreating visualizations...")
-    create_visualizations(df, output_dir=OUTPUT_DIR)
-    
     # ===== FINAL VERDICT =====
     print("\n" + "=" * 70)
     print(" FINAL VERDICT")
@@ -837,7 +833,7 @@ def main():
         print("     Formula requires revision.")
     
     print("\n" + "=" * 70)
-    print(f" Analysis complete. Check {OUTPUT_DIR}/ for full results.")
+    print(f" Analysis complete. Results saved to {OUTPUT_DIR}/validation_results.csv")
     print("=" * 70 + "\n")
 
 
