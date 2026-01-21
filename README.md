@@ -48,20 +48,18 @@ dimensional-loss-theorem/
 ├── README.md                    # This file
 ├── LICENSE                      # CC BY 4.0
 ├── requirements.txt             # Python dependencies
-├── paper/                       # Published paper (PDF + LaTeX)
+├── paper/                       # Published paper
+│   └── Thornhill_2026_Dimensional_Loss_Theorem.pdf
 ├── data/                        # Validation datasets
 │   ├── dimensional_stress_data.csv          # Main validation data (N=60)
-│   ├── detailed_validation_results.csv      # Extended results
-│   ├── residue_data_gpt2.csv               # GPT-2 residue patterns
-│   ├── residue_data_google_gemma-2-2b-it.csv  # Gemma-2 residue patterns
+│   ├── detailed_validation_results.csv      # Extended validation results
 │   └── test_sentences.py                   # The 60 test sentences
 ├── code/                        # Validation scripts
-│   ├── verification_script.py              # Main theorem validation
-│   └── validate_from_csv.py                # Quick validation from CSV
+│   ├── validate_from_csv.py                # Quick validation from CSV (RECOMMENDED)
+│   └── verification_script.py              # Full neural network validation
 └── figures/                     # Validation visualizations
-    ├── validation_results.png              # Figure 1 from paper
-    ├── batch_validation_results.png
-    └── results_validate_csv.png
+    ├── validation_results.png              # Main validation figure
+    └── results_validate_csv.png            # CSV validation results
 ```
 
 ---
