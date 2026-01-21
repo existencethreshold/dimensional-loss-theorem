@@ -75,45 +75,193 @@ dimensional-loss-theorem/
 git clone https://github.com/existencethreshold/dimensional-loss-theorem.git
 cd dimensional-loss-theorem
 
-# Install dependencies
+# Install core dependencies
+# Windows:
 pip install -r requirements.txt
+
+# Linux/Mac:
+pip3 install -r requirements.txt
 ```
 
 ### Run Validation
 
-**Option 1: Validate from saved data (fastest)**
+**Option 1: Quick Test (uses pre-computed data) - RECOMMENDED**
+
+This validates the theorem using the pre-computed CSV data. No additional dependencies required.
+
 ```bash
 cd code
+
+# Windows:
 python validate_from_csv.py
+
+# Linux/Mac:
+python3 validate_from_csv.py
 ```
 
-**Option 2: Full verification script**
+This takes ~30 seconds and proves the theorem without needing transformers.
+
+---
+
+**Option 2: Full Verification (tests on neural networks)**
+
+This tests the theorem on actual GPT-2 and Gemma-2 attention maps. **Note:** First run downloads ~500MB of model weights.
+
 ```bash
+# Install transformers library first
+# Windows:
+pip install transformers torch
+
+# Linux/Mac:
+pip3 install transformers torch --break-system-packages
+
 cd code
+
+# Windows:
 python verification_script.py
+
+# Linux/Mac:
+python3 verification_script.py
 ```
+
+First run takes ~10 minutes (downloads models). Subsequent runs are faster.
+
+---
+
+### Python Version Note
+
+**Windows users:** Use `python` and `pip`  
+**Linux/Mac users:** Use `python3` and `pip3`
+
+The scripts work with Python 3.8+
 
 ### Expected Output
 
+**From validate_from_csv.py:**
 ```
-==================================================
- DIMENSIONAL LOSS THEOREM VALIDATION
-==================================================
+======================================================================
+ DIMENSIONAL LOSS THEOREM - CSV DATA VALIDATION
+ Nathan M. Thornhill - January 21, 2026
+======================================================================
+
+Loading validation data from: dimensional_stress_data.csv
+✓ Loaded 60 patterns
+
+======================================================================
+ VALIDATION RESULTS
+======================================================================
 
 Patterns tested: 60
 Grid sizes: 8-18 (mean: 10.9)
 Average density: 0.1006 ± 0.0069
 
 COMPONENT VALIDATION:
-  S-Component error: 0.000% ± 0.000%  ✓
-  R-Component error: 0.000% ± 0.000%  ✓
-  D-Component error: 0.000% ± 0.000%  ✓
+  S-Component error: 0.000% ± 0.000%  ✓ EXACT
+  R-Component error: 0.000% ± 0.000%  ✓ EXACT
+  D-Component error: 0.000% ± 0.000%  ✓ EXACT
 
-Total Φ Loss: 84.39% ± 1.55%
-Theoretical:  84-86%
+Information Loss:
+  Observed: 84.39% ± 1.55%
+  Expected: 84-86%
+  ✓ WITHIN TOLERANCE
 
 ✓✓✓ DIMENSIONAL LOSS THEOREM VALIDATED
 ```
+
+**From verification_script.py (with neural networks):**
+```
+======================================================================
+ DIMENSIONAL LOSS THEOREM VALIDATION
+ Nathan M. Thornhill - January 21, 2026
+======================================================================
+
+Extracting attention from 60 sentences using gpt2...
+[Downloads models on first run - ~500MB]
+
+Patterns tested: 60
+Total Φ Loss: 84.39% ± 1.55%
+
+✓✓✓ DIMENSIONAL LOSS THEOREM VALIDATED
+     Proceed with publication.
+
+Analysis complete. Check validation_results/ for full results.
+```
+
+---
+
+## Troubleshooting
+
+### "FileNotFoundError: attention_maps.npy"
+
+**Problem:** The verification script is looking for pre-saved attention map data that doesn't exist.
+
+**Solution 1 (Quick):** Use the CSV validation instead:
+```bash
+# Windows:
+python validate_from_csv.py
+
+# Linux/Mac:
+python3 validate_from_csv.py
+```
+
+**Solution 2 (Full test):** Install transformers and generate the data:
+```bash
+# Windows:
+pip install transformers torch
+
+# Linux/Mac:
+pip3 install transformers torch --break-system-packages
+
+# Then run verification script
+# Windows:
+python verification_script.py
+
+# Linux/Mac:
+python3 verification_script.py
+```
+
+---
+
+### "ModuleNotFoundError: No module named 'transformers'"
+
+**Problem:** The transformers library isn't installed.
+
+**Solution:** Either install transformers OR use the CSV validation:
+```bash
+# Option 1: Install transformers (for full neural network validation)
+# Windows:
+pip install transformers torch
+
+# Linux/Mac:
+pip3 install transformers torch --break-system-packages
+
+# Option 2: Use CSV validation (faster, no transformers needed)
+# Windows:
+python validate_from_csv.py
+
+# Linux/Mac:
+python3 validate_from_csv.py
+```
+
+---
+
+### "command not found: python" (Linux/Mac)
+
+**Problem:** Linux/Mac systems use `python3` instead of `python`.
+
+**Solution:** Use `python3` instead:
+```bash
+python3 validate_from_csv.py
+python3 verification_script.py
+```
+
+---
+
+### First run is very slow
+
+**This is normal!** The first run of `verification_script.py` downloads ~500MB of model weights (GPT-2, Gemma-2). This only happens once. Subsequent runs are much faster.
+
+If you want faster validation, use `validate_from_csv.py` instead.
 
 ---
 

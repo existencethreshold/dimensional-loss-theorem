@@ -415,6 +415,18 @@ def validate_from_saved_data(data_path: str) -> pd.DataFrame:
     Returns:
         DataFrame with results
     """
+    import os
+    if not os.path.exists(data_path):
+        raise FileNotFoundError(
+            f"Data file not found: {data_path}\n"
+            f"\n"
+            f"To generate this data, you need to:\n"
+            f"1. Install transformers: pip install transformers torch\n"
+            f"2. Set USE_SAVED_DATA = False in the main() function\n"
+            f"\n"
+            f"Or run the CSV validation instead: python validate_from_csv.py"
+        )
+    
     print(f"Loading saved data from {data_path}...")
     data = np.load(data_path, allow_pickle=True).item()
     
@@ -708,9 +720,15 @@ def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
     # ===== RUN VALIDATION =====
+    import os
     if USE_SAVED_DATA:
         print(f"\nLoading data from: {SAVED_DATA_PATH}")
-        df = validate_from_saved_data(SAVED_DATA_PATH)
+        try:
+            df = validate_from_saved_data(SAVED_DATA_PATH)
+        except FileNotFoundError as e:
+            print(f"\n⚠️  ERROR: {e}")
+            print("\nExiting. Please follow the instructions above.")
+            return
     else:
         print(f"\nExtracting attention from {len(SENTENCES)} sentences using {MODEL_NAME}")
         df = validate_dataset(SENTENCES, model_name=MODEL_NAME)
