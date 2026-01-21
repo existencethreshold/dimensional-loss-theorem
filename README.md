@@ -42,7 +42,6 @@ Validation using GPT-2 and Gemma-2 attention maps (N=60) shows **0.000% error** 
 ---
 
 ## Repository Structure
-
 ```
 dimensional-loss-theorem/
 ├── README.md                    # This file
@@ -54,12 +53,12 @@ dimensional-loss-theorem/
 │   ├── dimensional_stress_data.csv          # Main validation data (N=60)
 │   ├── detailed_validation_results.csv      # Extended validation results
 │   └── test_sentences.py                   # The 60 test sentences
-├── code/                        # Validation scripts
-│   ├── validate_from_csv.py                # Quick validation from CSV (RECOMMENDED)
-│   └── verification_script.py              # Full neural network validation
-└── figures/                     # Validation visualizations
-    ├── validation_results.png              # Main validation figure
-    └── results_validate_csv.png            # CSV validation results
+└── code/                        # Validation scripts
+    ├── validate_from_csv.py                # Quick validation + figure generation (RECOMMENDED)
+    ├── verification_script.py              # Full neural network validation (advanced)
+    └── validation_results/                 # Generated output (not in git)
+        ├── validation_results.png          # Main validation figure
+        └── detailed_validation_results.csv # Full validation results
 ```
 
 ---
@@ -177,9 +176,15 @@ Information Loss:
   ✓ WITHIN TOLERANCE
 
 ✓✓✓ DIMENSIONAL LOSS THEOREM VALIDATED
+
+Figure saved to: validation_results/validation_results.png
 ```
 
-**From verification_script.py (with neural networks):**
+**Output files:**
+- `validation_results/validation_results.png` - Validation figure
+- `validation_results/detailed_validation_results.csv` - Full results
+
+---
 ```
 ======================================================================
  DIMENSIONAL LOSS THEOREM VALIDATION
