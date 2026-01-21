@@ -51,12 +51,11 @@ dimensional-loss-theorem/
 │   └── Thornhill_2026_Dimensional_Loss_Theorem.pdf
 ├── data/                        # Validation datasets
 │   ├── dimensional_stress_data.csv          # Main validation data (N=60)
-│   ├── detailed_validation_results.csv      # Extended validation results
 │   └── test_sentences.py                   # The 60 test sentences
 └── code/                        # Validation scripts
     ├── validate_from_csv.py                # Quick validation + figure generation (RECOMMENDED)
     ├── verification_script.py              # Full neural network validation (advanced)
-    └── validation_results/                 # Generated output (not in git)
+    └── validation_results/                 # Generated output (Remove before running replication)
         ├── validation_results.png          # Main validation figure
         └── detailed_validation_results.csv # Full validation results
 ```
